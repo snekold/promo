@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить новый приз</title>
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+
+<form th:action="@{/promo-admin-panel/add-prize}" method="post" enctype="multipart/form-data">
+    <labe> Введите название подарка</labe><br>
+    <input name="name_prize" type="text"><br><br>
+
+    <labe> Введите коды к подарку</labe><br>
+    <textarea name="codes_prize" type="text"></textarea><br><br>
+
+    <labe> Выберите изображение</labe><br><br>
+    <input name="image_prize" type="file"><br><br>
+
+    <button type="submit"> добавить </button>
+
+</form>
+
+
+</body>
+</html>
