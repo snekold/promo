@@ -3,6 +3,7 @@ package com.snekold.promo.controller;
 
 
 import com.snekold.promo.model.Prize;
+import com.snekold.promo.service.PrizeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +17,17 @@ import java.nio.file.Paths;
 
 @Controller
 public class PrizeController {
+    private PrizeService prizeService;
+
+    public PrizeController(PrizeService prizeService) {
+        this.prizeService = prizeService;
+    }
 
     @GetMapping("/promo-admin-panel/add-prize")
     public String addNewPrizeThroughAdminPanel(){
-    return "promo-admin-panel/add-prize";
+    return "add_new_prize";
     }
+
     @PostMapping("/promo-admin-panel/add-prize")
     public String addNewPrizeThroughAdminPanelPost
             (@RequestParam String name_prize,
@@ -30,16 +37,17 @@ public class PrizeController {
     {
     String image_path = saveImage(image_prize);
 
-    String[] codes =  codes_prize.split(",");
+    String[] codes =  codes_prize.split("[,;]");
 
+    for (String code : codes) {
         Prize prize = new Prize();
         prize.setNamePrize(name_prize);
         prize.setImagePath(image_path);
+        prize.setCod(code);
 
-
-        return"admin-panel";
-
-
+        prizeService.addPrize(prize);
+    }
+        return addNewPrizeThroughAdminPanel();
     }
 
 
@@ -47,6 +55,7 @@ public class PrizeController {
     private String saveImage(MultipartFile image_prize){
         String folder = "src/main/resources/static/images/";
         String fileName = image_prize.getOriginalFilename();
+
         Path path = Paths.get(folder + fileName);
 
 
