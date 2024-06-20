@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список призов</title>
+
+    <style>
+        nav {
+            background: rgba(53, 175, 34, 0.65);
+            color: #f3f1f1;
+            text-align: center;
+            padding: 10px;
+        }
+
+        nav a {
+            padding-left: 10px;
+            color: #f3f1f1;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background-color: rgba(53, 175, 34, 0.85);
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: rgba(53, 175, 34, 0.75);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+        img{
+            max-width: 50px;
+            max-height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/promo-admin-panel">Админ панель</a>
+    <a href="/promo-admin-panel/add-prize">Добавить подарок</a>
+    <a href="/promo-admin-panel/spisok-prize">Список подарков</a>
+</nav>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Имя победителя</th>
+        <th>Номер</th>
+        <th>Email</th>
+        <th>Статус</th>
+        <th>Код</th>
+        <th>Название приза</th>
+        <th>Изображение</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="prize : ${prizeList}">
+        <td th:text="${prize.id}"></td>
+        <td th:text="${prize.nameWinner}"></td>
+        <td th:text="${prize.number}"></td>
+        <td th:text="${prize.email}"></td>
+        <td th:text="${prize.status}"></td>
+        <td th:text="${prize.cod}"></td>
+        <td th:text="${prize.namePrize}"></td>
+        <td>
+            <img th:src="${prize.imagePath}" alt="Prize Image">
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
