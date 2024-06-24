@@ -4,11 +4,10 @@ package com.snekold.promo.controller;
 
 import com.snekold.promo.model.Prize;
 import com.snekold.promo.service.PrizeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,8 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 @Controller
+@RequestMapping("/promo-admin-panel")
 public class PrizeController {
     private PrizeService prizeService;
 
@@ -25,12 +26,12 @@ public class PrizeController {
         this.prizeService = prizeService;
     }
 
-    @GetMapping("/promo-admin-panel/add-prize")
+    @GetMapping("/add-prize")
     public String addNewPrizeThroughAdminPanel(){
     return "add_new_prize";
     }
 
-    @PostMapping("/promo-admin-panel/add-prize")
+    @PostMapping("/add-prize")
     public String addNewPrizeThroughAdminPanelPost
             (@RequestParam String name_prize,
              @RequestParam String codes_prize,
@@ -69,7 +70,7 @@ public class PrizeController {
         return "/images/"+fileName;
     }
 
-    @GetMapping("/promo-admin-panel/spisok-prize")
+    @GetMapping("/spisok-prize")
 
     public String getPrizeSpisok(Model model){
         List<Prize> allPrize = prizeService.getAllPrize();
@@ -78,5 +79,21 @@ public class PrizeController {
         return "spisok-prize";
     }
 
+    @GetMapping("/")
+    public String getPrizeList(Model model){
+        return "admin_panel";
+    }
+    @PostMapping("/set-status")
+    public ResponseEntity<String> changeStatus(@RequestBody Map<String,Long> jsonMap){
+       long prize_id = jsonMap.get("id");
+       boolean setStatus = prizeService.setStatusById(prize_id);
+       if(setStatus){
+          return ResponseEntity.ok("status change");
+       }else {
+           return ResponseEntity.internalServerError().body("error");
+       }
+
+
+    }
 
 }

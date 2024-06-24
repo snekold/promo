@@ -55,6 +55,24 @@
             max-height: 50px;
         }
     </style>
+
+    <script>
+    function changeStatus(prizeId) {
+        fetch('/promo-admin-panel/set-status',
+            {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id:prizeId})
+            })
+            .then(response =>{
+                if (response.ok){
+                    location.reload()
+                } else{
+                    alert('ошибка при смене статуса')
+                }
+            });
+    }
+    </script>
+
 </head>
 <body>
 
@@ -75,6 +93,7 @@
         <th>Код</th>
         <th>Название приза</th>
         <th>Изображение</th>
+        <th>Функционал</th>
     </tr>
     </thead>
     <tbody>
@@ -88,6 +107,9 @@
         <td th:text="${prize.namePrize}"></td>
         <td>
             <img th:src="${prize.imagePath}" alt="Prize Image">
+        </td>
+        <td>
+            <button class="btn" th:attr="onclick='changeStatus('+ ${prize.id}+')'" >сменить статус</button>
         </td>
 
     </tr>
