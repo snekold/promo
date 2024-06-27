@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню</title>
+    <style>
+        body {
+            background-image: url('/img_for_view/bg_user_panel.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        nav {
+            background: rgb(116, 131, 52);
+            color: #f3f1f1;
+            text-align: center;
+            padding: 10px;
+        }
+        nav a {
+            padding-left: 10px;
+            color: #f3f1f1;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/promo-information">Правила акции</a>
+    <a href="#" id="how-to-participate">Как участвовать</a>
+    <a href="/prize">Призы</a>
+    <a href="/promo_cod">Проверить код</a>
+</nav>
+
+<!-- Модальное окно -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modal-text">Здесь будет информация о том, как участвовать.</p>
+    </div>
+</div>
+
+<script>
+    // Получаем элементы
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("how-to-participate");
+    var span = document.getElementsByClassName("close")[0];
+
+    // Открываем модальное окно при нажатии на кнопку
+    btn.onclick = function(event) {
+        event.preventDefault(); // Предотвращаем переход по ссылке
+        // AJAX запрос к контроллеру для получения данных
+        fetch('/how-to-participate')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('modal-text').innerHTML = data;
+                modal.style.display = "flex"; // Показываем модальное окно
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Закрываем модальное окно при нажатии на <span> (x)
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Закрываем модальное окно при клике вне окна
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
