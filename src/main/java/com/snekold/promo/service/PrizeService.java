@@ -35,4 +35,8 @@ public class PrizeService {
           return false;
       }
     }
+
+    public Prize getPrizeByCode(String code) {
+      return  prizeRepository.findPrizeByCod(code);
+    }
 }

@@ -1,9 +1,10 @@
 package com.snekold.promo.controller;
 
 
-
 import com.snekold.promo.model.Prize;
 import com.snekold.promo.service.PrizeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/promo-admin-panel")
 public class PrizeController {
+    private static final Logger log = LoggerFactory.getLogger(PrizeController.class);
     private PrizeService prizeService;
 
     public PrizeController(PrizeService prizeService) {
@@ -27,8 +29,8 @@ public class PrizeController {
     }
 
     @GetMapping("/add-prize")
-    public String addNewPrizeThroughAdminPanel(){
-    return "add_new_prize";
+    public String addNewPrizeThroughAdminPanel() {
+        return "admin/add_new_prize";
     }
 
     @PostMapping("/add-prize")
@@ -36,26 +38,24 @@ public class PrizeController {
             (@RequestParam String name_prize,
              @RequestParam String codes_prize,
              @RequestParam MultipartFile image_prize
-             )
-    {
-    String image_path = saveImage(image_prize);
+            ) {
+        String image_path = saveImage(image_prize);
 
-    String[] codes =  codes_prize.split("[,;]");
+        String[] codes = codes_prize.split("[,;]");
 
-    for (String code : codes) {
-        Prize prize = new Prize();
-        prize.setNamePrize(name_prize);
-        prize.setImagePath(image_path);
-        prize.setCod(code);
+        for (String code : codes) {
+            Prize prize = new Prize();
+            prize.setNamePrize(name_prize);
+            prize.setImagePath(image_path);
+            prize.setCod(code);
 
-        prizeService.addPrize(prize);
-    }
+            prizeService.addPrize(prize);
+        }
         return addNewPrizeThroughAdminPanel();
     }
 
 
-
-    private String saveImage(MultipartFile image_prize){
+    private String saveImage(MultipartFile image_prize) {
         String folder = "src/main/resources/static/images/";
         String fileName = image_prize.getOriginalFilename();
 
@@ -63,37 +63,50 @@ public class PrizeController {
 
 
         try {
-            Files.write(path,image_prize.getBytes());
+            Files.write(path, image_prize.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return "/images/"+fileName;
+        return "/images/" + fileName;
     }
 
     @GetMapping("/spisok-prize")
 
-    public String getPrizeSpisok(Model model){
+    public String getPrizeSpisok(Model model) {
         List<Prize> allPrize = prizeService.getAllPrize();
-        model.addAttribute("prizeList",allPrize);
+        model.addAttribute("prizeList", allPrize);
 
-        return "spisok-prize";
+        return "admin/spisok-prize";
     }
 
     @GetMapping("/")
-    public String getPrizeList(Model model){
-        return "admin_panel";
+    public String getPrizeList(Model model) {
+        return "admin/admin_panel";
     }
+
     @PostMapping("/set-status")
-    public ResponseEntity<String> changeStatus(@RequestBody Map<String,Long> jsonMap){
-       long prize_id = jsonMap.get("id");
-       boolean setStatus = prizeService.setStatusById(prize_id);
-       if(setStatus){
-          return ResponseEntity.ok("status change");
-       }else {
-           return ResponseEntity.internalServerError().body("error");
-       }
+    public ResponseEntity<String> changeStatus(@RequestBody Map<String, Long> jsonMap) {
+        long prize_id = jsonMap.get("id");
+        boolean setStatus = prizeService.setStatusById(prize_id);
+        if (setStatus) {
+            return ResponseEntity.ok("status change");
+        } else {
+            return ResponseEntity.internalServerError().body("error");
+        }
 
 
+    }
+
+    @PostMapping("/check-code")
+    public ResponseEntity<String> checkCode(@RequestBody Map<String, String> jsonMap) {
+        String code = jsonMap.get("code");
+        log.info(code + "-----------------------<<<<<<");
+        Prize prize = prizeService.getPrizeByCode(code);
+        if(prize != null) {
+            return ResponseEntity.ok(code);
+        }else {
+            return ResponseEntity.internalServerError().body("error");
+        }
     }
 
 }

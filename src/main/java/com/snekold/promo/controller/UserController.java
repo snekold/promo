@@ -11,4 +11,11 @@ public class UserController {
         return "user/index";
     }
 
+    @GetMapping("/check-cod")
+    public String checkCod(){
+        return "user/chek_cod";
+    }
+
+
+
 }
