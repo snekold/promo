@@ -24,11 +24,11 @@
 </head>
 <body>
 <nav>
-    <a href="/promo-admin-panel/">Адмни панель</a>
-    <a href="/promo-admin-panel/add-prize">Добавить подарок</a>
-    <a href="/promo-admin-panel/spisok-prize">Список подарков</a>
+    <a href="/promo-admin-panel">Адмни панель</a>
+    <a href="/add-prize">Добавить подарок</a>
+    <a href="/spisok-prize">Список подарков</a>
 </nav>
-<form th:action="@{/promo-admin-panel/add-prize}" method="post" enctype="multipart/form-data">
+<form th:action="@{/add-prize}" method="post" enctype="multipart/form-data">
     <labe> Введите название подарка</labe><br>
     <input name="name_prize" type="text"><br><br>
 
