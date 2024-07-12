@@ -144,7 +144,7 @@
             modal.style.display = "none"; // Скрываем модальное окно
         }
     }
-
+hg
     // Проверка кода при нажатии на кнопку "Проверить"
     checkBtn.onclick = function() {
         var code = promoCodeInput.value; // Получаем значение введенного кода
@@ -160,16 +160,9 @@
                 },
                 body: JSON.stringify({ code: code }), // Отправляем код в теле запроса
             })
-                .then(response => {
-                    if (response.ok) { // Проверяем, что статус ответа OK
-                        return response.text(); // Получаем текст ответа
-                    } else {
-                        throw new Error('Network response was not ok');
-                    }
-                })
                 .then(data => {
                     if (data != null) { // Проверяем содержимое ответа
-                        window.location.href = '/prize-page?prize=' + encodeURIComponent(data); // Перенаправляем с передачей данных
+                        window.location.href = '/form-completion?code=therfgerg'; // Перенаправляем с передачей данных
                     } else {
                         alert('Код неверен'); // Показываем сообщение, если код неверен
                     }
