@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping("/")
     public String index(){
-        System.out.println("index");
+
         return "user/index";
     }
 

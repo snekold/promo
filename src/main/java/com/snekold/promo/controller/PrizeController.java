@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,15 +19,15 @@ import java.util.Map;
 @Controller
 @Slf4j
 public class PrizeController {
-    PrizeService prizeService;
+
+    private final PrizeService prizeService;
 
     public PrizeController(PrizeService prizeService) {
         this.prizeService = prizeService;
     }
 
     @GetMapping("/check-cod")
-    public String checkCod(){
-
+    public String checkCod() {
         log.info("check-cod start ---------------------<<<<<<");
         return "user/chek_cod";
     }
@@ -38,13 +35,13 @@ public class PrizeController {
     @PostMapping("/check-code")
     public ResponseEntity<String> checkCode(@RequestBody Map<String, String> jsonMap) {
         String code = jsonMap.get("code");
-        log.info(code + "-----------------------<<<<<<");
-        System.out.println(code);
+        log.info("Received code: " + code);
+
         Prize prize = prizeService.getPrizeByCode(code);
-        if(prize != null) {
+        if (prize != null) {
             return ResponseEntity.ok(code);
-        }else {
-            return ResponseEntity.internalServerError().body("error");
+        } else {
+            return ResponseEntity.status(400).body("error"); // Возвращаем 400 ошибку вместо 500
         }
     }
 
@@ -53,34 +50,25 @@ public class PrizeController {
         return "admin/add_new_prize";
     }
 
-    /** вывод призов в админ панели */
     @GetMapping("/spisok-prize")
     public String getPrizeSpisok(Model model) {
         List<Prize> allPrize = prizeService.getAllPrize();
         model.addAttribute("prizeList", allPrize);
-
         return "admin/spisok-prize";
     }
 
-    /** вывод призов в юзер панель */
     @GetMapping("/prize")
     public String getPrizeSpisokForUser(Model model) {
         List<Prize> allPrize = prizeService.getAllPrize();
         model.addAttribute("prizeList", allPrize);
-
         return "user/prize";
     }
 
-
-
     @PostMapping("/add-prize")
-    public String addNewPrizeThroughAdminPanelPost
-            (@RequestParam String name_prize,
-             @RequestParam String codes_prize,
-             @RequestParam MultipartFile image_prize
-            ) {
+    public String addNewPrizeThroughAdminPanelPost(@RequestParam String name_prize,
+                                                   @RequestParam String codes_prize,
+                                                   @RequestParam MultipartFile image_prize) {
         String image_path = saveImage(image_prize);
-
         String[] codes = codes_prize.split("[,;]");
 
         for (String code : codes) {
@@ -94,13 +82,10 @@ public class PrizeController {
         return addNewPrizeThroughAdminPanel();
     }
 
-
     private String saveImage(MultipartFile image_prize) {
         String folder = "src/main/resources/static/images/";
         String fileName = image_prize.getOriginalFilename();
-
         Path path = Paths.get(folder + fileName);
-
 
         try {
             Files.write(path, image_prize.getBytes());
@@ -119,8 +104,5 @@ public class PrizeController {
         } else {
             return ResponseEntity.internalServerError().body("error");
         }
-
-
     }
-
 }

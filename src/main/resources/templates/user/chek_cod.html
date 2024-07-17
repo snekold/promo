@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,7 +113,6 @@
 </div>
 
 <script>
-    // Получаем элементы модального окна и кнопки для открытия модального окна
     var modal = document.getElementById("myModal");
     var btn = document.getElementById("how-to-participate");
     var span = document.getElementsByClassName("close")[0];
@@ -120,56 +120,59 @@
     var promoCodeInput = document.getElementById("promo-code");
     var errorMessage = document.getElementById("error-message");
 
-    // Открываем модальное окно при нажатии на кнопку "Как участвовать"
     btn.onclick = function(event) {
-        event.preventDefault(); // Предотвращаем переход по ссылке
-        // AJAX запрос к контроллеру для получения данных
+        event.preventDefault();
         fetch('/how-to-participate')
-            .then(response => response.text()) // Получаем ответ в виде текста
+            .then(response => response.text())
             .then(data => {
-                document.getElementById('modal-text').innerHTML = data; // Обновляем текст в модальном окне
-                modal.style.display = "flex"; // Показываем модальное окно
+                document.getElementById('modal-text').innerHTML = data;
+                modal.style.display = "flex";
             })
-            .catch(error => console.error('Error:', error)); // Обработка ошибок
+            .catch(error => console.error('Error:', error));
     }
 
-    // Закрываем модальное окно при нажатии на <span> (x)
     span.onclick = function() {
-        modal.style.display = "none"; // Скрываем модальное окно
+        modal.style.display = "none";
     }
 
-    // Закрываем модальное окно при клике вне окна
     window.onclick = function(event) {
         if (event.target == modal) {
-            modal.style.display = "none"; // Скрываем модальное окно
+            modal.style.display = "none";
         }
     }
-hg
-    // Проверка кода при нажатии на кнопку "Проверить"
+
     checkBtn.onclick = function() {
-        var code = promoCodeInput.value; // Получаем значение введенного кода
-        if (code.length < 5 || code.length > 10) { // Проверяем длину кода
-            errorMessage.style.display = "block"; // Показываем сообщение об ошибке
+        var code = promoCodeInput.value;
+        if (code.length < 5 || code.length > 10) {
+            errorMessage.style.display = "block";
         } else {
-            errorMessage.style.display = "none"; // Скрываем сообщение об ошибке
-            // Отправка POST запроса к контроллеру
+            errorMessage.style.display = "none";
             fetch('/check-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ code: code }), // Отправляем код в теле запроса
+                body: JSON.stringify({ code: code }),
             })
-                .then(data => {
-                    if (data != null) { // Проверяем содержимое ответа
-                        window.location.href = '/form-completion?code=therfgerg'; // Перенаправляем с передачей данных
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
                     } else {
-                        alert('Код неверен'); // Показываем сообщение, если код неверен
+                        throw new Error('Код неверен');
                     }
                 })
-                .catch(error => console.error('Error:', error)); // Обработка ошибок
+                .then(data => {
+                    window.location.href = '/form-completion?code=' + data;
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
         }
     }
 </script>
 </body>
 </html>
+
+
+
+
